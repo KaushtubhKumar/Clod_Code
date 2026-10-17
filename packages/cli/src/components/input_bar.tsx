@@ -1,5 +1,9 @@
-import type { KeyBinding } from "@opentui/core";
+import type { KeyBinding, TextareaRenderable } from "@opentui/core";
 import StatusBar from "./status-bar";
+import { useCallback, useEffect, useRef } from "react";
+import { useRenderer } from "@opentui/react";
+import { useCommandMenu } from "./command-menu/use-command-menu";
+import type { Command } from "./command-menu/types";
 
 type Props={
     onSubmit:(text:string)=>void;
@@ -13,9 +17,48 @@ export const TEXTAREA_KEY_BINDINGS:KeyBinding[]=[
   {name:"enter", shift:true,action:"newline"}
 ];
  
-
-
 export default function InputBar({onSubmit,disabled=false}:Props) {
+  const textareaRef=useRef<TextareaRenderable>(null);
+  const onSubmitRef=useRef<()=>void>(()=>{})
+  const renderer=useRenderer();  
+
+    const{
+        showCommandMenu,
+        commandQuery,
+        selectedIndex,
+        scrollRef,
+        handleContentChange,
+        resolveCommand,
+        setSelectedIndex
+    }=useCommandMenu();
+
+
+    const handleCommand=useCallback((command: Command | undefined)=>{
+
+    })
+
+  useEffect(()=>{
+    const textarea=textareaRef.current;
+    if(!textarea) return;
+
+    textarea.onSubmit=()=>{
+      onSubmitRef.current();
+    }
+  },[])
+
+    onSubmitRef.current=()=>{
+      if(disabled) return;
+
+      if(showCommandMenu){
+        const command=resolveCommand(selectedIndex);
+        handleCommand(command);
+        return;
+      }
+
+      handleSubmit();
+
+    }
+  
   return (
     <box
     width="100%"

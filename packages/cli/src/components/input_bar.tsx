@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useRenderer } from "@opentui/react";
 import { useCommandMenu } from "./command-menu/use-command-menu";
 import type { Command } from "./command-menu/types";
+import { CommandMenu } from "./command-menu";
 
 type Props={
     onSubmit:(text:string)=>void;
@@ -32,10 +33,52 @@ export default function InputBar({onSubmit,disabled=false}:Props) {
         setSelectedIndex
     }=useCommandMenu();
 
+    const handleCommandExecute=useCallback(
+      (index:number)=>{
+        const command=resolveCommand(index);
+        handleCommand(command);
+      }
+      ,[])
+
+    const handleTextareaContentChange=useCallback(()=>{
+      const textarea=textareaRef.current
+
+      if(!textarea) return;
+
+      handleContentChange(textarea.plainText);
+
+    },[])
+
 
     const handleCommand=useCallback((command: Command | undefined)=>{
+        const textarea=textareaRef.current;
+        if(!textarea || !command) return;
 
-    })
+        textarea.setText("");
+        if(command.action){
+          command.action({
+            exit:()=>renderer.destroy()
+          })
+        }
+        else{
+          textarea.insertText(command.value + " ");
+        }
+
+    },[renderer])
+
+    const handleSubmit=useCallback(()=>{
+      if(disabled) return;
+
+      const textarea=textareaRef.current;
+      if(!textarea) return;
+
+      const text=textarea.plainText.trim();
+      if(text.length===0) return;
+
+      onSubmit(text);
+      textarea.setText("");
+
+    },[disabled,onSubmit])
 
   useEffect(()=>{
     const textarea=textareaRef.current;
@@ -60,24 +103,53 @@ export default function InputBar({onSubmit,disabled=false}:Props) {
     }
   
   return (
+    <box width="100%" alignItems="center">
     <box
     width="100%"
     position="relative"
     justifyContent="center"
     paddingX={2}
-    paddingY={1}
+    paddingY={1} 
     backgroundColor="#1a1a24"
     gap={1}
-
     border={["left"]}
     borderColor="cyan"
     >
 
+    <box  position="relative" justifyContent="center"
+    paddingX={2} paddingY={1} backgroundColor="#1a1a24"
+    width="100%" gap={1}>
+    
+    {showCommandMenu && (
+      <box position="absolute"
+      bottom="100%"
+      left={0}
+      width="100%"
+      backgroundColor="#1a1a21"
+      zIndex={10}>
+        <CommandMenu
+        query={commandQuery}
+        selectedIndex={selectedIndex}
+        scrollRef={scrollRef}
+        onSelect={setSelectedIndex}
+        onExecute={handleCommandExecute}
+        >
+
+
+
+        </CommandMenu>
+      </box>
+    )}
+
     <textarea focused={!disabled}
+    ref={textareaRef}
     keyBindings={TEXTAREA_KEY_BINDINGS}
+    onContentChange={handleTextareaContentChange}
     placeholder={'Ask anything... "Fix a bug in the database'}>
     </textarea>
     <StatusBar/>
+    </box>
+    </box>
     </box>
   )
 }

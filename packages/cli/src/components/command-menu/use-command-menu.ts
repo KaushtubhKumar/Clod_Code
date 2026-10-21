@@ -14,7 +14,6 @@ type UseCommandMenuReturn={
     handleContentChange:(text:string)=>void
     resolveCommand:(index:number)=>Command | undefined
     setSelectedIndex:(index:number)=>void;
-    
 }
 
 export function useCommandMenu():UseCommandMenuReturn{
@@ -38,7 +37,7 @@ export function useCommandMenu():UseCommandMenuReturn{
         }
 
         const prefix=text.startsWith("/") ? text.slice(1):null;
-        if(prefix!== null && prefix.includes(" ")){
+        if (prefix !== null && !prefix.includes(" ")) {
             setShowCommandMenu(true)
         }
         else{

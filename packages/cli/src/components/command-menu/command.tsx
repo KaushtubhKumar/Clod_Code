@@ -44,5 +44,30 @@ export const COMMANDs:Command[]=[
         description:"Spawn or switch multiple agents",
         value:"/agents"
     },
+     {
+        name:'agents',
+        description:"Spawn or switch multiple agents",
+        value:"/agents"
+    },
+     {
+        name:'agents',
+        description:"Spawn or switch multiple agents",
+        value:"/agents"
+    },
+     {
+        name:'agents',
+        description:"Spawn or switch multiple agents",
+        value:"/agents"
+    },
+     {
+        name:'agents',
+        description:"Spawn or switch multiple agents",
+        value:"/agents"
+    },
+     {
+        name:'agents',
+        description:"Spawn or switch multiple agents",
+        value:"/agents"
+    },
     
 ]

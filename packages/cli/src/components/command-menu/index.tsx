@@ -1,6 +1,3 @@
-
-
-
 import type { RefObject } from "react";
 import { COMMANDs } from "./command";
 import { TextAttributes, type ScrollBoxRenderable } from "@opentui/core";
@@ -36,7 +33,7 @@ export function CommandMenu({query,selectedIndex,scrollRef,onSelect,onExecute}:C
     return(
         <scrollbox ref={scrollRef} height={visibleHeight}>
            {filtered.map((cmd,i)=>{
-                const isSelected=i=selectedIndex;
+                const isSelected=i===selectedIndex;
                 return (
                     <box key={cmd.value}
                     flexDirection="row"
